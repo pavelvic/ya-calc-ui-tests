@@ -9,21 +9,25 @@ public class SearchPage {
 
     public WebDriver driver;
 
+    //строка ввода поискового запроса
     @FindBy(xpath = "//*[@id=\"text\"]")
-    private WebElement searchField;
+    private WebElement searchField; //text input
 
+    //кнопка "Найти"
     @FindBy (xpath = "//*[contains(text(), 'Найти')]//..")
-    private WebElement searchBtn;
+    private WebElement searchBtn; //button
 
     public SearchPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
     }
 
+    //метод для ввода запроса в текстовое поле
     public void inputSearchText (String searchText) {
         searchField.sendKeys(searchText);
     }
 
+    //нажатие кнопки поиска
     public void clickSearchBtn () {
         searchBtn.click();
     }
