@@ -5,32 +5,40 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class ResultPage {
+import java.util.Optional;
+/**
+ задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
+ необходимые для этих выражений элементы страницы с калькулятором:
+ - текстовое поле ввода;
+ - переключатель DEG / RAD
+ - кнопки калькулятора:
+ - числа 0, 1, 2, 4, 5;
+ - операции: запятая ","; Pi (π); sqrt (√); cos; знак умножения (*); знак деления (/); скобки "()"; кнопка сброса (C, clear); кнопка "равно" (=)
+ Ограничения тестового задания говорят, что достаточно описать только эти поля. При реальном тестировании, конечно, следует моделировать страницу полностью
+ Но сейчас это не нужно и создат много лишнего кода, поэтому ограничился только этими полями
+ **/
 
-    /**
-     задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
-     необходимые для этих выражений элементы страницы с калькулятором:
-     - текстовое поле ввода;
-     - переключатель DEG / RAD
-     - кнопки калькулятора:
-        - числа 0, 1, 2, 4, 5;
-        - операции: запятая ","; Pi (π); sqrt (√); cos; знак умножения (*); знак деления (/); скобки "()"; кнопка сброса (C, clear); кнопка "равно" (=)
-     Ограничения тестового задания говорят, что достаточно описать только эти поля. При реальном тестировании, конечно, следует моделировать страницу полностью
-     Но сейчас это не нужно и создат много лишнего кода, поэтому ограничился только этими полями
-     **/
+public class ResultPage {
 
     public WebDriver driver;
 
+    //калькулятор в результатах поиска
+    @FindBy(xpath = "//*[@id=\"search-result\"]/li[2]")
+    private WebElement fastSearchResult;//type marked list <li>
+
     //текстовое поле ввода формулы
-    @FindBy(xpath = "//*[@id=\"uniq165185881674715189\"]")
-    private WebElement inputExpression; //type: input text area
+    @FindBy(xpath = "//*[@id=\"search-result\"]/li[2]/div/div/div/div/div[1]/span[2]/span/input")
+    private WebElement expression; //type: input text area
+
+    @FindBy(xpath = "//*[@id=\"search-result\"]/li[2]/div/div/div/div/div[1]/div/div[2]/span[4]")
+    private WebElement result; //type: input text area
 
     //режим калькулятора DEG
-    @FindBy(xpath = "//*[@id=\"uniq165185881674715187\"]")
+    @FindBy(xpath = "//*[@value=\"deg\"]")
     private WebElement deg; //type: radiobutton
 
     //режим калькулятора RAD
-    @FindBy(xpath = "//*[@id=\"uniq165185881674715188\"]")
+    @FindBy(xpath = "//*[@value=\"rad\"]")
     private WebElement rad; //type: radiobutton
 
 
@@ -97,6 +105,25 @@ public class ResultPage {
         this.driver = driver;
     }
 
+    //метод для ввода запроса в текстовое поле
+    public void inputExpression (String input) {
+        expression.sendKeys(input);
+    }
+
+    //получаем результат вычисления
+    public String getResult() {
+        return result.getText();
+    }
+
+    //кликаем для выбора режима калькулятора
+    public void clickDeg() {
+        deg.click();
+    }
+
+    public void clickRad() {
+        rad.click();
+    }
+
     /* блок методов нажатий на кнопки*/
     public void clickNullBtn() {
         nullBtn.click();
@@ -154,4 +181,7 @@ public class ResultPage {
         equalBtn.click();
     }
 
+    public Optional<String> getFastSearchResultType() {
+        return Optional.ofNullable(fastSearchResult.getAttribute("data-fast-name"));
+    }
 }
