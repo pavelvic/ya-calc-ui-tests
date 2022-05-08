@@ -34,54 +34,102 @@ public class CalculatorTest {
         return new Object[][]{
                 {"√(144)", "12", "DEG"},
                 {"1,5*100", "150", "DEG"},
-                {"cos(p/2 )", "0","RAD"},
+                {"cos(p / 2)", "0","RAD"},
 
         };
     }
 
+    private void waitSomething(long millis)
+    {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     //загрузился ли калькулятор в результатах поиска
     @Test
-    public void testCalculatorInFastResultSection() {
-        assertThat(resultPage.getFastSearchResultType().orElse("smth othr"), is("calculator"));
+    public void testHasCalculatorInFastResultSection() {
+        String expected = "calculator";
+        String actual = resultPage.getFastSearchResultType().orElse("smth othr");
+        assertThat(actual, is(expected));
     }
 
     //тест ввода значений с клавиатурыв текствое поле
     @Test(dataProvider = "possibleInputs")
-    public void testKeyboardInput(String input, String expected, String mode) {
+    public void testKeyboardInput(String input, String expectedResult, String mode) {
         //установка режима калькулятора
         if (mode.equals("RAD")) resultPage.clickRad();
 
         //вводим значения
         resultPage.inputExpression(input);
 
-        //ожидание для прогрузки
-        try {
-            Thread.sleep(1*1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //нужна пауза, чтобы кликнуть равно гарантированно после ввода и не раньше
+        //TODO как правильно сделать ожидание? Средствами Selenium, многопоточность, простой while c запросом
+        waitSomething(100);
 
         //равно
         resultPage.clickEqualBtn();
 
-        //TODO разобраться с таймаутами и поставить средствами селениум в правильном месте
-        //ожидание для прогрузки
-        try {
-            Thread.sleep(1*1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //TODO как правильно сделать ожидание? Средствами Selenium, многопоточность, простой while c запросом
+        //нужна пазуа, чтобы метод ганатированно запросил и получил результат после нажатия равно
+        waitSomething(100);
 
-        //проверяем
-        assertThat(resultPage.getResult(),is(expected));
+        //получаем результат и проверяем с ожиданием
+        assertThat(resultPage.getResult(),is(expectedResult));
 
-        //сбрасываем значения
+        //сбрасываем значения для след теста
         resultPage.clickClearBtn();
+    }
+
+    @Test (description = "test case: sqrt(144) = 12")
+    public void testSqrt144is12WithManualInput () {
+        String expected = "12";
+        resultPage.clickSqrtBtn();
+        resultPage.clickOneBtn();
+        resultPage.clickFourBtn();
+        resultPage.clickFourBtn();
+        resultPage.clickEqualBtn();
+        String actual = resultPage.getResult();
+        assertThat(actual,is(expected));
+        resultPage.clickClearBtn();
+    }
+
+    @Test(description = "test case: 1.5*100 = 150")
+    public void testMultiply1point5and100Is150WithManualInput () {
+        String expected = "150";
+        resultPage.clickOneBtn();
+        resultPage.clickSeparatorBtn();
+        resultPage.clickFiveBtn();
+        resultPage.clickMultiplyBtn();
+        resultPage.clickOneBtn();
+        resultPage.clickNullBtn();
+        resultPage.clickNullBtn();
+        resultPage.clickEqualBtn();
+        String actual = resultPage.getResult();
+        assertThat(actual,is(expected));
+        resultPage.clickClearBtn();
+    }
+
+    @Test (description = "test case: cos(pi/2) = 0")
+    public void testCosPiDiv2Is0WithManualInput() {
+        String expected = "0";
+        resultPage.clickRad(); //переключаем в режим RAD
+        resultPage.clickCosBtn();
+        resultPage.clickPiBtn();
+        resultPage.clickDivisionBtn();
+        resultPage.clickTwoBtn();
+        resultPage.clickEqualBtn();
+        String actual = resultPage.getResult();
+        assertThat(actual,is(expected));
+        resultPage.clickClearBtn();
+        resultPage.clickDeg(); //возвращаем в режим по умолачанию DEG
     }
 
     //убираем за собой
     @AfterClass
     public void tearDown() {
-        //driver.quit();
+        driver.quit();
     }
 }
