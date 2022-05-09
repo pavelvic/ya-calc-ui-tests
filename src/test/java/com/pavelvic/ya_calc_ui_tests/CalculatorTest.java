@@ -40,10 +40,10 @@ public class CalculatorTest {
         };
     }
 
-    private void waitSomething(long millis)
+    private void waitSomething(long mills)
     {
         try {
-            Thread.sleep(millis);
+            Thread.sleep(mills);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class CalculatorTest {
 
     //загрузился ли калькулятор в результатах поиска (приоритет 1, так как другие тесты не имеют смысла без проверки окружения, остальные тесты - приоритет 2)
     @Step ("Калькулятор загрузился на странице с результатами поиска")
-    @Test (priority = 1)
+    @Test (priority = 1, description = "Загрузка калькулятора")
     public void testHasCalculatorInFastResultSection() {
         String expected = "calculator";
         String actual = resultPage.getFastSearchResultType().orElse("smth othr");
@@ -59,8 +59,8 @@ public class CalculatorTest {
     }
 
     //тест ввода значений с клавиатурыв текствое поле
-    @Step ("Ввод с клавиатуры {input} = {expectedResult} ({mode})")
-    @Test(dataProvider = "possibleInputs", priority = 2)
+    @Step ("Введено с клавиатуры {input}, получено {expectedResult} в режиме ({mode})")
+    @Test(dataProvider = "possibleInputs", priority = 2, description = "Ввод данных с клавиатуры")
     public void testKeyboardInput(String input, String expectedResult, String mode) {
         //установка режима калькулятора
         switch (mode) {
@@ -90,7 +90,8 @@ public class CalculatorTest {
         assertThat(resultPage.getResult(),is(expectedResult));
     }
 
-    @Test (description = "test case: sqrt(144) = 12", priority = 2)
+    @Step ("Набрано кнопками sqrt(144), получено 12")
+    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12", priority = 2)
     public void testSqrt144is12WithManualInput () {
         String expected = "12";
         resultPage.clickDeg();
@@ -103,7 +104,8 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
-    @Test(description = "test case: 1.5*100 = 150", priority = 2)
+    @Step ("Набрано кнопками 1.5*100, получено 150")
+    @Test(description = "Нажатие кнопок калькулятора для 1.5*100 = 150", priority = 2)
     public void testMultiply1point5and100Is150WithManualInput () {
         String expected = "150";
         resultPage.clickDeg();
@@ -119,7 +121,8 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
-    @Test (description = "test case: cos(pi/2) = 0", priority = 2)
+    @Step ("Набрано кнопками cos(pi/2), получено 0")
+    @Test (description = "Нажатие кнопок калькулятора для cos(pi/2) = 0", priority = 2)
     public void testCosPiDiv2Is0WithManualInput() {
         String expected = "0";
         resultPage.clickRad(); //переключаем в режим RAD

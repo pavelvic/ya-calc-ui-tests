@@ -45,7 +45,6 @@ public class ResultPage {
     private WebElement rad; //type: radiobutton
 
 
-    //TODO: оптимизировать xpath через поиск по родителю элемента <span class="button2__text">0</span> и аналогично для остальных кнопок
     //кнопка на калькуляторе "0"
     //@FindBy (xpath = "//*[@id=\"search-result\"]/li[2]/div/div/div/div/div[2]/div[5]/button[4]")
     @FindBy(xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"0\"')]")
