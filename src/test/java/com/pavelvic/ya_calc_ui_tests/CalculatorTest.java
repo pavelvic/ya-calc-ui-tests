@@ -1,8 +1,11 @@
 package com.pavelvic.ya_calc_ui_tests;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.*;
+
+import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -13,21 +16,22 @@ public class CalculatorTest {
     public static SearchPage searchPage;
     public static ResultPage resultPage;
 
-    //настройка окружения перед тестами + открытие главной страницы
+    //настройка окружения перед тестами + открытие страницы с тестируемым приложением
     @BeforeClass
     public void setup() {
         System.setProperty("webdriver.chrome.driver", ConfProperties.getProperty("chromedriver"));
         driver = new ChromeDriver();
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        driver.manage().window().maximize();
         searchPage = new SearchPage(driver);
         resultPage = new ResultPage(driver);
-        driver.manage().window().maximize();
         driver.get(ConfProperties.getProperty("mainpage"));
         searchPage.inputSearchText("Калькулятор");
         searchPage.clickSearchBtn();
     }
 
     @DataProvider
-    public Object[][] possibleInputs() {
+    private Object[][] possibleInputs() {
         return new Object[][]{
                 {"√(144)", "12", "DEG"},
                 {"1,5*100", "150", "DEG"},
@@ -45,7 +49,8 @@ public class CalculatorTest {
         }
     }
 
-    //загрузился ли калькулятор в результатах поиска
+    //загрузился ли калькулятор в результатах поиска (приоритет 1, так как другие тесты не имеют смысла без проверки окружения, остальные тесты - приоритет 2)
+    @Step ("Калькулятор загрузился на странице с результатами поиска")
     @Test (priority = 1)
     public void testHasCalculatorInFastResultSection() {
         String expected = "calculator";
@@ -54,6 +59,7 @@ public class CalculatorTest {
     }
 
     //тест ввода значений с клавиатурыв текствое поле
+    @Step ("Ввод с клавиатуры {input} = {expectedResult} ({mode})")
     @Test(dataProvider = "possibleInputs", priority = 2)
     public void testKeyboardInput(String input, String expectedResult, String mode) {
         //установка режима калькулятора
@@ -126,10 +132,12 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    //очищаем поле ввода после каждого теста
     @AfterMethod
     private void clearButtonClk () {
         resultPage.clickClearBtn();
     }
+
     //убираем за собой
     @AfterClass
     public void tearDown() {
