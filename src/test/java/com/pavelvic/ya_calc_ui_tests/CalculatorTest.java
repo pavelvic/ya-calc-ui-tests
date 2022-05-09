@@ -2,10 +2,7 @@ package com.pavelvic.ya_calc_ui_tests;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -49,7 +46,7 @@ public class CalculatorTest {
     }
 
     //загрузился ли калькулятор в результатах поиска
-    @Test
+    @Test (priority = 1)
     public void testHasCalculatorInFastResultSection() {
         String expected = "calculator";
         String actual = resultPage.getFastSearchResultType().orElse("smth othr");
@@ -57,10 +54,17 @@ public class CalculatorTest {
     }
 
     //тест ввода значений с клавиатурыв текствое поле
-    @Test(dataProvider = "possibleInputs")
+    @Test(dataProvider = "possibleInputs", priority = 2)
     public void testKeyboardInput(String input, String expectedResult, String mode) {
         //установка режима калькулятора
-        if (mode.equals("RAD")) resultPage.clickRad();
+        switch (mode) {
+            case  "DEG":
+                resultPage.clickDeg();
+                break;
+            case "RAD":
+                resultPage.clickRad();
+                break;
+        }
 
         //вводим значения
         resultPage.inputExpression(input);
@@ -78,14 +82,12 @@ public class CalculatorTest {
 
         //получаем результат и проверяем с ожиданием
         assertThat(resultPage.getResult(),is(expectedResult));
-
-        //сбрасываем значения для след теста
-        resultPage.clickClearBtn();
     }
 
-    @Test (description = "test case: sqrt(144) = 12")
+    @Test (description = "test case: sqrt(144) = 12", priority = 2)
     public void testSqrt144is12WithManualInput () {
         String expected = "12";
+        resultPage.clickDeg();
         resultPage.clickSqrtBtn();
         resultPage.clickOneBtn();
         resultPage.clickFourBtn();
@@ -93,12 +95,12 @@ public class CalculatorTest {
         resultPage.clickEqualBtn();
         String actual = resultPage.getResult();
         assertThat(actual,is(expected));
-        resultPage.clickClearBtn();
     }
 
-    @Test(description = "test case: 1.5*100 = 150")
+    @Test(description = "test case: 1.5*100 = 150", priority = 2)
     public void testMultiply1point5and100Is150WithManualInput () {
         String expected = "150";
+        resultPage.clickDeg();
         resultPage.clickOneBtn();
         resultPage.clickSeparatorBtn();
         resultPage.clickFiveBtn();
@@ -109,10 +111,9 @@ public class CalculatorTest {
         resultPage.clickEqualBtn();
         String actual = resultPage.getResult();
         assertThat(actual,is(expected));
-        resultPage.clickClearBtn();
     }
 
-    @Test (description = "test case: cos(pi/2) = 0")
+    @Test (description = "test case: cos(pi/2) = 0", priority = 2)
     public void testCosPiDiv2Is0WithManualInput() {
         String expected = "0";
         resultPage.clickRad(); //переключаем в режим RAD
@@ -123,10 +124,12 @@ public class CalculatorTest {
         resultPage.clickEqualBtn();
         String actual = resultPage.getResult();
         assertThat(actual,is(expected));
-        resultPage.clickClearBtn();
-        resultPage.clickDeg(); //возвращаем в режим по умолачанию DEG
     }
 
+    @AfterMethod
+    private void clearButtonClk () {
+        resultPage.clickClearBtn();
+    }
     //убираем за собой
     @AfterClass
     public void tearDown() {
