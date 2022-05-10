@@ -44,8 +44,10 @@ public class CalculatorTest {
                  * программа должна сама подставить недостающие символы и посчитать результат, эту функцию и проверяют следующие кейсы
                  * аналогично для "cos(p / 2)" достаточно ввести с клавиатуры только "c" (cos), "p" (число Пи), "/" (деление), "2" (цифра два)
                  * **/
-                {"√144", "12","DEG"},
-                {"cp/2", "0","RAD"},
+                {"√144", "12", "DEG"},
+                {"144√", "", "DEG"}, //не окончательное выражение введено
+                {"cp/2", "0", "RAD"},
+                {"p/2 cos", "Ошибка", "RAD"}, //ошибка ввода
 
         };
     }
@@ -74,7 +76,7 @@ public class CalculatorTest {
     public void testKeyboardInput(String input, String expectedResult, String mode) {
         //установка режима калькулятора
         switch (mode) {
-            case  "DEG":
+            case "DEG":
                 resultPage.clickDeg();
                 break;
             case "RAD":
@@ -97,7 +99,7 @@ public class CalculatorTest {
         waitSomething(100);
 
         //получаем результат и проверяем с ожиданием
-        assertThat(resultPage.getResult(),is(expectedResult));
+        assertThat(expectedResult.equals("Ошибка") ? resultPage.getError() : resultPage.getResult(),is(expectedResult));
 
         //сброс
         //TODO как правильно сделать такого рода явное ожидание?  Насколько это допустимо? Какое правильное решение проблемы?
@@ -106,15 +108,30 @@ public class CalculatorTest {
         resultPage.clickClearBtn();
     }
 
-    @Step ("Набрано кнопками sqrt(144), получено 12")
-    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12", priority = 2)
+    @Step ("Набрано кнопками sqrt(144), получено 12 (прямой порядок ввода)")
+    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (прямой порядок ввода)", priority = 2)
     public void testSqrt144is12WithManualInput () {
+        //прямой порядок ввода - сначала '√', потом '144'
         String expected = "12";
         resultPage.clickDeg();
         resultPage.clickSqrtBtn();
         resultPage.clickOneBtn();
         resultPage.clickFourBtn();
         resultPage.clickFourBtn();
+        resultPage.clickEqualBtn();
+        String actual = resultPage.getResult();
+        assertThat(actual,is(expected));
+    }
+
+    @Step ("Набрано кнопками sqrt(144), получено 12 (обратный порядок ввода)")
+    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (обратный порядок ввода)", priority = 2)
+    public void test144Sqrtis12WithManualInput () {
+        String expected = "12";
+        resultPage.clickDeg();
+        resultPage.clickOneBtn();
+        resultPage.clickFourBtn();
+        resultPage.clickFourBtn();
+        resultPage.clickSqrtBtn();
         resultPage.clickEqualBtn();
         String actual = resultPage.getResult();
         assertThat(actual,is(expected));
@@ -151,6 +168,20 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Step ("Набрано кнопками pi/2cos(, получена ошибка")
+    @Test (description = "Нажатие кнопок калькулятора для pi/2cos( = error", priority = 2)
+    public void testPiDiv2CosIsErrorWithManualInput() {
+        String expected = "Ошибка";
+        resultPage.clickRad(); //переключаем в режим RAD
+        resultPage.clickPiBtn();
+        resultPage.clickDivisionBtn();
+        resultPage.clickTwoBtn();
+        resultPage.clickCosBtn();
+        resultPage.clickEqualBtn();
+        String actual = resultPage.getError();
+        assertThat(actual,is(expected));
+    }
+
     //очищаем поле ввода после каждого теста
     @AfterMethod
     private void clearButtonClk () {
@@ -160,6 +191,6 @@ public class CalculatorTest {
     //убираем за собой
     @AfterClass
     public void tearDown() {
-        driver.quit();
+        //driver.quit();
     }
 }

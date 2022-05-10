@@ -36,6 +36,9 @@ public class ResultPage {
     @FindBy(xpath = "//*[@class=\"calculator-display__result\"]")
     private WebElement result; //type: input text area
 
+    @FindBy(xpath = "//*[@class=\"calculator-display__error\"]")
+    private WebElement error; //type: input text area
+
     //режим калькулятора DEG
     @FindBy(xpath = "//*[@value=\"deg\"]")
     private WebElement deg; //type: radiobutton
@@ -129,6 +132,10 @@ public class ResultPage {
     //получаем результат вычисления
     public String getResult() {
         return result.getText();
+    }
+
+    public String getError() {
+        return error.getText();
     }
 
     //кликаем для выбора режима калькулятора
