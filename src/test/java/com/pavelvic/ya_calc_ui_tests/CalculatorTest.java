@@ -37,6 +37,7 @@ public class CalculatorTest {
                 {"√(144)", "12", "DEG"},
                 {"1,5*100", "150", "DEG"},
                 {"cos(p / 2)", "0","RAD"},
+
                 /**для некоторых вводимых формул у программы есть функция autocomplete
                  * из наших кейсов это формулы "√(144)" и "cos(p / 2)"
                  * для этих формул необязательно вводить с клавиатуры полность и последовательно символы "√", "(", "144", ")"
@@ -45,9 +46,12 @@ public class CalculatorTest {
                  * аналогично для "cos(p / 2)" достаточно ввести с клавиатуры только "c" (cos), "p" (число Пи), "/" (деление), "2" (цифра два)
                  * **/
                 {"√144", "12", "DEG"},
-                {"144√", "", "DEG"}, //не окончательное выражение введено
                 {"cp/2", "0", "RAD"},
+
+                /*тест кейсы с измененённым порядком аргументов*/
+                {"144√", "", "DEG"}, //не окончательное выражение введено
                 {"p/2 cos", "Ошибка", "RAD"}, //ошибка ввода
+                {"100*1,5", "150", "DEG"},
 
         };
     }
@@ -123,7 +127,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
-    @Step ("Набрано кнопками sqrt(144), получено 12 (обратный порядок ввода)")
+    @Step ("Набрано кнопками 144sqrt, получено 12 (обратный порядок ввода)")
     @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (обратный порядок ввода)", priority = 2)
     public void test144Sqrtis12WithManualInput () {
         String expected = "12";
@@ -154,6 +158,23 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Step ("Набрано кнопками 100*1,5, получено 150")
+    @Test(description = "Нажатие кнопок калькулятора для 100*1,5 = 150", priority = 2)
+    public void testMultiply100and1point5Is150WithManualInput () {
+        String expected = "150";
+        resultPage.clickDeg();
+        resultPage.clickOneBtn();
+        resultPage.clickNullBtn();
+        resultPage.clickNullBtn();
+        resultPage.clickMultiplyBtn();
+        resultPage.clickOneBtn();
+        resultPage.clickSeparatorBtn();
+        resultPage.clickFiveBtn();
+        resultPage.clickEqualBtn();
+        String actual = resultPage.getResult();
+        assertThat(actual,is(expected));
+    }
+
     @Step ("Набрано кнопками cos(pi/2), получено 0")
     @Test (description = "Нажатие кнопок калькулятора для cos(pi/2) = 0", priority = 2)
     public void testCosPiDiv2Is0WithManualInput() {
@@ -168,7 +189,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
-    @Step ("Набрано кнопками pi/2cos(, получена ошибка")
+    @Step ("Набрано кнопками pi/2cos(  - получена ошибка")
     @Test (description = "Нажатие кнопок калькулятора для pi/2cos( = error", priority = 2)
     public void testPiDiv2CosIsErrorWithManualInput() {
         String expected = "Ошибка";
@@ -191,6 +212,6 @@ public class CalculatorTest {
     //убираем за собой
     @AfterClass
     public void tearDown() {
-        //driver.quit();
+        driver.quit();
     }
 }
