@@ -16,6 +16,12 @@ public class CalculatorTest {
     public static SearchPage searchPage;
     public static ResultPage resultPage;
 
+    /** чек лист:
+     * проверить ввод формулы с клавиатуры (прямой / обратный порядок ввода)
+     * проверить ввод формулы кнопками на форме (прямой / обратный порядок ввода)
+     * проверить работу функциональности autocomplete (ввод с клавиатуры / с кнопок приложения)
+     * */
+
     //настройка окружения перед тестами + открытие страницы с тестируемым приложением
     @BeforeClass
     public void setup() {
@@ -34,9 +40,9 @@ public class CalculatorTest {
     @DataProvider
     private Object[][] possibleInputs() {
         return new Object[][]{
-                {"√(144)", "12", "DEG"},
-                {"1,5*100", "150", "DEG"},
-                {"cos(p / 2)", "0","RAD"},
+                {"√  (144)", "12", "DEG"},
+                {"1,5* 100", "150", "DEG"},
+                {"cos(p/ 2)", "0","RAD"},
 
                 /**для некоторых вводимых формул у программы есть функция autocomplete
                  * из наших кейсов это формулы "√(144)" и "cos(p / 2)"
@@ -51,7 +57,7 @@ public class CalculatorTest {
                 /*тест кейсы с измененённым порядком аргументов*/
                 {"144√", "", "DEG"}, //не окончательное выражение введено
                 {"p/2 cos", "Ошибка", "RAD"}, //ошибка ввода
-                {"100*1,5", "150", "DEG"},
+                {"100   * 1,5", "150", "DEG"},
 
         };
     }
@@ -127,9 +133,25 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Step ("Набрано кнопками sqrt(144) c нажатием кнопки '()' перед '=', получено 12")
+    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (с кнопкой Скобки перед '=')", priority = 2)
+    public void testSqrt144is12WithEndBracketManualInput () {
+        String expected = "12";
+        resultPage.clickDeg();
+        resultPage.clickSqrtBtn();
+        resultPage.clickOneBtn();
+        resultPage.clickFourBtn();
+        resultPage.clickFourBtn();
+        resultPage.clickBracketsBtn(); //!!!
+        resultPage.clickEqualBtn();
+        String actual = resultPage.getResult();
+        assertThat(actual,is(expected));
+    }
+
     @Step ("Набрано кнопками 144sqrt, получено 12 (обратный порядок ввода)")
     @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (обратный порядок ввода)", priority = 2)
     public void test144Sqrtis12WithManualInput () {
+        //обратный порядок ввода - сначала '144', потом '√'
         String expected = "12";
         resultPage.clickDeg();
         resultPage.clickOneBtn();
