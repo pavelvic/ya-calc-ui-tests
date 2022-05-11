@@ -33,7 +33,7 @@ public class CalculatorElement extends HtmlElement {
 
     //кнопка на калькуляторе "2"
     @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '2']/..")
-    private WebElement twoBtn;
+    private Button twoBtn;
 
     //кнопка на калькуляторе "4"
     @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '4']/..")
@@ -49,7 +49,7 @@ public class CalculatorElement extends HtmlElement {
 
     //кнопка "Pi" (число Пи)
     @FindBy(xpath = "//*[@class = \"button2__text\" and text() = 'π']/..")
-    private Button piBtn; //type: button
+    private Button piBtn;
 
     //кнопка "квардартный корень"
     @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '√']/..")
