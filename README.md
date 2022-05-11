@@ -18,12 +18,12 @@ HTMLElements
 ## Результаты
 Использован TestNG, hamcrest, PageObject.
 
-Реализация с использованием HTMLElements в отдельной ветке "HTMLElements"[ссылка на репо].
-Соответственно в "main" [ссылка на репо] реализация без "HTMLElements"
+Реализация с использованием HTMLElements в отдельной ветке ["HTMLElements"](https://github.com/pavelvic/ya-calc-ui-tests/tree/HTMLElements).
+Соответственно в ["main"] (https://github.com/pavelvic/ya-calc-ui-tests/tree/main) реализация без "HTMLElements"
 
 Отчтеность Allure реализована в обоих ветках
-[скрин]
+![allure_report](https://github.com/pavelvic/ya-calc-ui-tests/blob/HTMLElements/_screenshots/allure_report.jpg)
 
-Затрачено времени:
+_Затрачено времени_:
 основное задание - 13.5 часов
 доп (Allure + HTMLElements) - 7 часов
