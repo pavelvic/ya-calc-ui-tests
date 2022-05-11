@@ -16,4 +16,8 @@ public class SearchPage {
     public void search (String searchText) {
         searchArrow.search(searchText);
     }
+
+    public SearchArrow getSearchArrow() {
+        return searchArrow;
+    }
 }

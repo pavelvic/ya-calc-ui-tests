@@ -43,9 +43,12 @@ public class CalculatorTest {
     @Step("Открытие тестируемой веб-страницы")
     private void openPage () {
         driver.get(ConfProperties.getProperty("mainpage"));
-        searchPage.search("Калькулятор");
-//        searchPage.inputSearchText("Калькулятор");
-//        searchPage.clickSearchBtn();
+    }
+
+    @Step ("Поиск '{input}'")
+    private void searchSomething (String input) {
+        searchPage.search(input);
+
     }
 
     //настройка окружения перед тестами + открытие страницы с тестируемым приложением
@@ -54,6 +57,7 @@ public class CalculatorTest {
        driverInit();
        initPages();
        openPage();
+       searchSomething("Калькулятор");
     }
 
     //тест кейсы для ввода данных с клавиатуры в формате {"последовательность символов для ввода с клавиатуры", "результат", "режим вычисления (RAD / DEG)"}
@@ -64,7 +68,7 @@ public class CalculatorTest {
                 {"1,5* 100", "150", "DEG"},
                 {"cos(p/ 2)", "0","RAD"},
 
-                 /**для некоторых вводимых формул у программы есть функция autocomplete
+                 /*для некоторых вводимых формул у программы есть функция autocomplete
                  * из наших кейсов это формулы "√(144)" и "cos(p / 2)"
                  * для этих формул необязательно вводить с клавиатуры полность и последовательно символы "√", "(", "144", ")"
                  * программа умеет подставлять нужные знаки. Например, для вычисления "√(144) = 12" достаточно ввести с клавиатуры последовательно только  "√", "144" и нажать "равно",
@@ -82,10 +86,19 @@ public class CalculatorTest {
         };
     }
 
-    //приоритет 1, так как другие тесты не имеют смысла без проверки что мы получили калькулятор для работы, остальные тесты - приоритет 2
+    //приоритет 1, так как другие тесты не имеют смысла без проверки что мы получили главную страницу
+    //приоритет 2 у тесте наличия калькулятора в резлуьтатах поиска калькулятор для работы, остальные тесты - приоритет 3
+    @Feature("Инициализация главной страницы")
+    @Step ("Появилась главная страница с формой для ввода и кнопкой 'Найти'")
+    @Test (priority = 1, description = "Загрузка калькулятора")
+    public void testHasMainPageWithSearchArrowElement() {
+        assertThat(searchPage.getSearchArrow(), exists());
+    }
+
+
     @Feature("Инициализация калькулятора")
     @Step ("Калькулятор загрузился на странице с результатами поиска")
-    @Test (priority = 1, description = "Загрузка калькулятора")
+    @Test (priority = 2, description = "Загрузка калькулятора")
     public void testHasCalculatorInFastResultSection() {
         assertThat(resultPage.getCalculatorElement(), exists());
     }
@@ -93,7 +106,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул с клавиатуры")
     @Step ("Введено с клавиатуры {input}, получено {expectedResult} в режиме ({mode})")
-    @Test(dataProvider = "possibleInputs", priority = 2, description = "Ввод данных с клавиатуры")
+    @Test(dataProvider = "possibleInputs", priority = 3, description = "Ввод данных с клавиатуры")
     public void testKeyboardInput(String input, String expectedResult, String mode) {
         //установка режима калькулятора
         switch (mode) {
@@ -117,7 +130,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками sqrt(144), получено 12 (прямой порядок ввода)")
-    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (прямой порядок ввода)", priority = 2)
+    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (прямой порядок ввода)", priority = 3)
     public void testSqrt144is12WithManualInput () {
         //прямой порядок ввода - сначала '√', потом '144'
         String expected = "12";
@@ -133,7 +146,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками sqrt(144) c нажатием кнопки '()' перед '=', получено 12")
-    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (с кнопкой Скобки перед '=')", priority = 2)
+    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (с кнопкой Скобки перед '=')", priority = 3)
     public void testSqrt144is12WithEndBracketManualInput () {
         String expected = "12";
         resultPage.clickDeg();
@@ -149,7 +162,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками 144sqrt, получено 12 (обратный порядок ввода)")
-    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (обратный порядок ввода)", priority = 2)
+    @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (обратный порядок ввода)", priority = 3)
     public void test144Sqrtis12WithManualInput () {
         //обратный порядок ввода - сначала '144', потом '√'
         String expected = "12";
@@ -165,7 +178,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками 1.5*100, получено 150")
-    @Test(description = "Нажатие кнопок калькулятора для 1,5*100 = 150", priority = 2)
+    @Test(description = "Нажатие кнопок калькулятора для 1,5*100 = 150", priority = 3)
     public void testMultiply1point5and100Is150WithManualInput () {
         String expected = "150";
         resultPage.clickDeg();
@@ -183,7 +196,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками 100*1,5, получено 150")
-    @Test(description = "Нажатие кнопок калькулятора для 100*1,5 = 150", priority = 2)
+    @Test(description = "Нажатие кнопок калькулятора для 100*1,5 = 150", priority = 3)
     public void testMultiply100and1point5Is150WithManualInput () {
         String expected = "150";
         resultPage.clickDeg();
@@ -201,7 +214,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками cos(pi/2), получено 0")
-    @Test (description = "Нажатие кнопок калькулятора для cos(pi/2) = 0", priority = 2)
+    @Test (description = "Нажатие кнопок калькулятора для cos(pi/2) = 0", priority = 3)
     public void testCosPiDiv2Is0WithManualInput() {
         String expected = "0";
         resultPage.clickRad(); //переключаем в режим RAD
@@ -216,7 +229,7 @@ public class CalculatorTest {
 
     @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками pi/2cos(  - получена ошибка")
-    @Test (description = "Нажатие кнопок калькулятора для pi/2cos( = error", priority = 2)
+    @Test (description = "Нажатие кнопок калькулятора для pi/2cos( = error", priority = 3)
     public void testPiDiv2CosIsErrorWithManualInput() {
         String expected = "Ошибка";
         resultPage.clickRad(); //переключаем в режим RAD
