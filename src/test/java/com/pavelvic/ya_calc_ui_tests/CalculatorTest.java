@@ -1,5 +1,6 @@
 package com.pavelvic.ya_calc_ui_tests;
 
+import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -22,18 +23,33 @@ public class CalculatorTest {
      * проверить работу функциональности autocomplete (ввод с клавиатуры / с кнопок приложения)
      * */
 
-    //настройка окружения перед тестами + открытие страницы с тестируемым приложением
-    @BeforeClass
-    public void setup() {
+    @Step("Инициализация драйвера")
+    private void driverInit() {
         System.setProperty("webdriver.chrome.driver", ConfProperties.getProperty("chromedriver"));
         driver = new ChromeDriver();
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
         driver.manage().window().maximize();
+    }
+
+    @Step("Инициализация веб-страниц")
+    private void initPages () {
         searchPage = new SearchPage(driver);
         resultPage = new ResultPage(driver);
+    }
+
+    @Step("Открытие тестируемой веб-страницы")
+    private void openPage () {
         driver.get(ConfProperties.getProperty("mainpage"));
         searchPage.inputSearchText("Калькулятор");
         searchPage.clickSearchBtn();
+    }
+
+    //настройка окружения перед тестами + открытие страницы с тестируемым приложением
+    @BeforeClass (description = "Настройка окружения")
+    public void setup() {
+       driverInit();
+       initPages();
+       openPage();
     }
 
     //тест кейсы для ввода данных с клавиатуры в формате {"последовательность символов для ввода с клавиатуры", "результат", "режим вычисления (RAD / DEG)"}
@@ -57,11 +73,12 @@ public class CalculatorTest {
                 /*тест кейсы с измененённым порядком аргументов*/
                 {"144√", "", "DEG"}, //не окончательное выражение введено
                 {"p/2 cos", "Ошибка", "RAD"}, //ошибка ввода
-                {"100   * 1,5", "150", "DEG"},
+                {"100   * 1,5", "150", "DEG"}, //от перестановки множителей произведение не меняется
 
         };
     }
 
+    @Step("Явное ожидание перед нажатием кнопки, обработкой ввода и тд")
     private void waitSomething(long mills)
     {
         try {
@@ -71,7 +88,8 @@ public class CalculatorTest {
         }
     }
 
-    //загрузился ли калькулятор в результатах поиска (приоритет 1, так как другие тесты не имеют смысла без проверки что мы получили калькулятор для работы, остальные тесты - приоритет 2)
+    //приоритет 1, так как другие тесты не имеют смысла без проверки что мы получили калькулятор для работы, остальные тесты - приоритет 2
+    @Feature("Инициализация калькулятора")
     @Step ("Калькулятор загрузился на странице с результатами поиска")
     @Test (priority = 1, description = "Загрузка калькулятора")
     public void testHasCalculatorInFastResultSection() {
@@ -80,7 +98,8 @@ public class CalculatorTest {
         assertThat(actual, is(expected));
     }
 
-    //тест ввода значений с клавиатурыв текствое поле
+
+    @Feature("Ввод формул с клавиатуры")
     @Step ("Введено с клавиатуры {input}, получено {expectedResult} в режиме ({mode})")
     @Test(dataProvider = "possibleInputs", priority = 2, description = "Ввод данных с клавиатуры")
     public void testKeyboardInput(String input, String expectedResult, String mode) {
@@ -97,7 +116,7 @@ public class CalculatorTest {
         //вводим значения
         resultPage.inputExpression(input);
 
-        //нужна пауза, чтобы кликнуть равно гарантированно после ввода и не раньше
+        //нужна пауза, чтобы кликнуть равно 'гарантированно' после ввода и не раньше
         //TODO как правильно сделать такого рода явное ожидание? Насколько это допустимо? Какое правильное решение проблемы?
         waitSomething(100);
 
@@ -105,7 +124,7 @@ public class CalculatorTest {
         resultPage.clickEqualBtn();
 
         //TODO как правильно сделать такого рода явное ожидание?  Насколько это допустимо? Какое правильное решение проблемы?
-        //нужна пазуа, чтобы метод ганатированно запросил и получил результат после нажатия равно
+        //нужна пазуа, чтобы метод 'ганатированно' запросил и получил результат после нажатия равно
         waitSomething(100);
 
         //получаем результат и проверяем с ожиданием
@@ -113,11 +132,12 @@ public class CalculatorTest {
 
         //сброс
         //TODO как правильно сделать такого рода явное ожидание?  Насколько это допустимо? Какое правильное решение проблемы?
-        //нужна пауза, чтобы метод гарантировано сбросил состояние перед следующим кейсом
+        //нужна пауза, чтобы метод 'гарантировано' сбросил состояние перед следующим кейсом
         waitSomething(100);
         resultPage.clickClearBtn();
     }
 
+    @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками sqrt(144), получено 12 (прямой порядок ввода)")
     @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (прямой порядок ввода)", priority = 2)
     public void testSqrt144is12WithManualInput () {
@@ -133,6 +153,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками sqrt(144) c нажатием кнопки '()' перед '=', получено 12")
     @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (с кнопкой Скобки перед '=')", priority = 2)
     public void testSqrt144is12WithEndBracketManualInput () {
@@ -148,6 +169,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками 144sqrt, получено 12 (обратный порядок ввода)")
     @Test (description = "Нажатие кнопок калькулятора для sqrt(144) = 12 (обратный порядок ввода)", priority = 2)
     public void test144Sqrtis12WithManualInput () {
@@ -163,6 +185,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками 1.5*100, получено 150")
     @Test(description = "Нажатие кнопок калькулятора для 1,5*100 = 150", priority = 2)
     public void testMultiply1point5and100Is150WithManualInput () {
@@ -180,6 +203,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками 100*1,5, получено 150")
     @Test(description = "Нажатие кнопок калькулятора для 100*1,5 = 150", priority = 2)
     public void testMultiply100and1point5Is150WithManualInput () {
@@ -197,6 +221,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками cos(pi/2), получено 0")
     @Test (description = "Нажатие кнопок калькулятора для cos(pi/2) = 0", priority = 2)
     public void testCosPiDiv2Is0WithManualInput() {
@@ -211,6 +236,7 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
+    @Feature("Ввод формул кнопками из приложения")
     @Step ("Набрано кнопками pi/2cos(  - получена ошибка")
     @Test (description = "Нажатие кнопок калькулятора для pi/2cos( = error", priority = 2)
     public void testPiDiv2CosIsErrorWithManualInput() {
@@ -225,14 +251,12 @@ public class CalculatorTest {
         assertThat(actual,is(expected));
     }
 
-    //очищаем поле ввода после каждого теста
-    @AfterMethod
+    @AfterMethod (description = "Сброс состояния калькулятора")
     private void clearButtonClk () {
         resultPage.clickClearBtn();
     }
 
-    //убираем за собой
-    @AfterClass
+    @AfterClass (description = "Закрытие драйвера")
     public void tearDown() {
         driver.quit();
     }
