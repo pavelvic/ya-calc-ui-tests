@@ -19,7 +19,7 @@ HTMLElements
 Использован TestNG, hamcrest, PageObject.
 
 Реализация с использованием HTMLElements в отдельной ветке ["HTMLElements"](https://github.com/pavelvic/ya-calc-ui-tests/tree/HTMLElements).
-Соответственно в ["main"] (https://github.com/pavelvic/ya-calc-ui-tests/tree/main) реализация без "HTMLElements"
+Соответственно в ["main"](https://github.com/pavelvic/ya-calc-ui-tests/tree/main) реализация без "HTMLElements"
 
 Отчтеность Allure реализована в обоих ветках
 ![allure_report](https://github.com/pavelvic/ya-calc-ui-tests/blob/HTMLElements/_screenshots/allure_report.jpg)
