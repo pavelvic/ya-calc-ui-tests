@@ -2,14 +2,17 @@ package com.pavelvic.ya_calc_ui_tests;
 
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.*;
 
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import static ru.yandex.qatools.htmlelements.matchers.WebElementMatchers.exists;
 
 public class CalculatorTest {
 
@@ -27,7 +30,7 @@ public class CalculatorTest {
     private void driverInit() {
         System.setProperty("webdriver.chrome.driver", ConfProperties.getProperty("chromedriver"));
         driver = new ChromeDriver();
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.manage().window().maximize();
     }
 
@@ -40,8 +43,9 @@ public class CalculatorTest {
     @Step("Открытие тестируемой веб-страницы")
     private void openPage () {
         driver.get(ConfProperties.getProperty("mainpage"));
-        searchPage.inputSearchText("Калькулятор");
-        searchPage.clickSearchBtn();
+        searchPage.search("Калькулятор");
+//        searchPage.inputSearchText("Калькулятор");
+//        searchPage.clickSearchBtn();
     }
 
     //настройка окружения перед тестами + открытие страницы с тестируемым приложением
@@ -60,7 +64,7 @@ public class CalculatorTest {
                 {"1,5* 100", "150", "DEG"},
                 {"cos(p/ 2)", "0","RAD"},
 
-                /**для некоторых вводимых формул у программы есть функция autocomplete
+                 /**для некоторых вводимых формул у программы есть функция autocomplete
                  * из наших кейсов это формулы "√(144)" и "cos(p / 2)"
                  * для этих формул необязательно вводить с клавиатуры полность и последовательно символы "√", "(", "144", ")"
                  * программа умеет подставлять нужные знаки. Например, для вычисления "√(144) = 12" достаточно ввести с клавиатуры последовательно только  "√", "144" и нажать "равно",
@@ -78,24 +82,12 @@ public class CalculatorTest {
         };
     }
 
-    @Step("Явное ожидание перед нажатием кнопки, обработкой ввода и тд")
-    private void waitSomething(long mills)
-    {
-        try {
-            Thread.sleep(mills);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     //приоритет 1, так как другие тесты не имеют смысла без проверки что мы получили калькулятор для работы, остальные тесты - приоритет 2
     @Feature("Инициализация калькулятора")
     @Step ("Калькулятор загрузился на странице с результатами поиска")
     @Test (priority = 1, description = "Загрузка калькулятора")
     public void testHasCalculatorInFastResultSection() {
-        String expected = "calculator";
-        String actual = resultPage.getFastSearchResultType().orElse("smth othr");
-        assertThat(actual, is(expected));
+        assertThat(resultPage.getCalculatorElement(), exists());
     }
 
 
@@ -114,27 +106,13 @@ public class CalculatorTest {
         }
 
         //вводим значения
-        resultPage.inputExpression(input);
-
-        //нужна пауза, чтобы кликнуть равно 'гарантированно' после ввода и не раньше
-        //TODO как правильно сделать такого рода явное ожидание? Насколько это допустимо? Какое правильное решение проблемы?
-        waitSomething(100);
-
-        //равно
-        resultPage.clickEqualBtn();
-
-        //TODO как правильно сделать такого рода явное ожидание?  Насколько это допустимо? Какое правильное решение проблемы?
-        //нужна пазуа, чтобы метод 'ганатированно' запросил и получил результат после нажатия равно
-        waitSomething(100);
+        resultPage.inputExpression(input+ Keys.ENTER);
 
         //получаем результат и проверяем с ожиданием
         assertThat(expectedResult.equals("Ошибка") ? resultPage.getError() : resultPage.getResult(),is(expectedResult));
 
         //сброс
-        //TODO как правильно сделать такого рода явное ожидание?  Насколько это допустимо? Какое правильное решение проблемы?
-        //нужна пауза, чтобы метод 'гарантировано' сбросил состояние перед следующим кейсом
-        waitSomething(100);
-        resultPage.clickClearBtn();
+        resultPage.inputExpression(""+Keys.ESCAPE);
     }
 
     @Feature("Ввод формул кнопками из приложения")

@@ -4,7 +4,7 @@
     "matchedStatuses": ["passed"]
   },
   {
-    "name": "Дефекти продукта",
+    "name": "Дефекты продукта",
     "matchedStatuses": ["failed"]
   },
   {
@@ -13,10 +13,10 @@
   },
   {
     "name": "Неизвестная проблема",
-    "matchedStatuses": ["broken", "failed", "unknown"]
+    "matchedStatuses": ["unknown"]
   },
   {
-    "name": "Прпущенно",
+    "name": "Пропущено",
     "matchedStatuses": ["skipped"]
   }
 ]
