@@ -2,12 +2,14 @@ package com.pavelvic.ya_calc_ui_tests;
 
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.*;
 
 import java.time.Duration;
 
+import static com.pavelvic.ya_calc_ui_tests.Utils.waitSomething;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -78,16 +80,6 @@ public class CalculatorTest {
         };
     }
 
-    @Step("Явное ожидание перед нажатием кнопки, обработкой ввода и тд")
-    private void waitSomething(long mills)
-    {
-        try {
-            Thread.sleep(mills);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     //приоритет 1, так как другие тесты не имеют смысла без проверки что мы получили калькулятор для работы, остальные тесты - приоритет 2
     @Feature("Инициализация калькулятора")
     @Step ("Калькулятор загрузился на странице с результатами поиска")
@@ -114,18 +106,7 @@ public class CalculatorTest {
         }
 
         //вводим значения
-        resultPage.inputExpression(input);
-
-        //нужна пауза, чтобы кликнуть равно 'гарантированно' после ввода и не раньше
-        //TODO как правильно сделать такого рода явное ожидание? Насколько это допустимо? Какое правильное решение проблемы?
-        waitSomething(100);
-
-        //равно
-        resultPage.clickEqualBtn();
-
-        //TODO как правильно сделать такого рода явное ожидание?  Насколько это допустимо? Какое правильное решение проблемы?
-        //нужна пазуа, чтобы метод 'ганатированно' запросил и получил результат после нажатия равно
-        waitSomething(100);
+        resultPage.inputExpression(input+ Keys.ENTER);;
 
         //получаем результат и проверяем с ожиданием
         assertThat(expectedResult.equals("Ошибка") ? resultPage.getError() : resultPage.getResult(),is(expectedResult));
@@ -134,7 +115,7 @@ public class CalculatorTest {
         //TODO как правильно сделать такого рода явное ожидание?  Насколько это допустимо? Какое правильное решение проблемы?
         //нужна пауза, чтобы метод 'гарантировано' сбросил состояние перед следующим кейсом
         waitSomething(100);
-        resultPage.clickClearBtn();
+        resultPage.inputExpression(""+Keys.ESCAPE);
     }
 
     @Feature("Ввод формул кнопками из приложения")

@@ -5,6 +5,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import static com.pavelvic.ya_calc_ui_tests.Utils.waitSomething;
+
 import java.util.Optional;
 /**
  задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
@@ -27,15 +29,15 @@ public class ResultPage {
     private WebElement fastSearchResult;//type marked list <li>
 
     //текстовое поле ввода формулы
-    @FindBy(xpath = "//*[@data-fast-name=\"calculator\"]//*[@class = \"input__box\"]/input")
+    @FindBy(xpath = "//div[@class = 'calculator__wrapper']//span[@class = \"input__box\"]/input")
     private WebElement expression; //type: input text area
 
     //поле с результатом
-    @FindBy(xpath = "//*[@class=\"calculator-display__result\"]")
+    @FindBy(className = "calculator-display__result")
     private WebElement result; //type: text area
 
     //поле с инфой об ошибке
-    @FindBy(xpath = "//*[@class=\"calculator-display__error\"]")
+    @FindBy(className = "calculator-display__error")
     private WebElement error; //type:  text area
 
     //режим калькулятора DEG
@@ -48,59 +50,59 @@ public class ResultPage {
 
 
     //кнопка на калькуляторе "0"
-    @FindBy(xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"0\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '0']/..")
     private WebElement nullBtn; //type: button
 
     //кнопка на калькуляторе "1"
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"1\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '1']/..")
     private WebElement oneBtn; //type: button
 
     //кнопка на калькуляторе "2"
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"2\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '2']/..")
     private WebElement twoBtn; //type: button
 
     //кнопка на калькуляторе "4"
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"4\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '4']/..")
     private WebElement fourBtn; //type: button
 
     //кнопка на калькуляторе "5"
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"5\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '5']/..")
     private WebElement fiveBtn; //type: button
 
     //кнопка "," (разделитель разрядов числа)
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\",\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = ',']/..")
     private WebElement separatorBtn; //type: button
 
     //кнопка "Pi" (число Пи)
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"π\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = 'π']/..")
     private WebElement piBtn; //type: button
 
     //кнопка "квардартный корень"
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"√\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '√']/..")
     private WebElement sqrtBtn; //type: button
 
     //кнопка "косинус" (cos)
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"cos\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = 'cos']/..")
     private WebElement cosBtn; //type: button
 
     //кнопка "умножение" *
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"*\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '×']/..")
     private WebElement multiplyBtn; //type: button
 
     //кнопка "деление" /
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"/\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '÷']/..")
     private WebElement divisionBtn; //type: button
 
     //кнопка "скобки" ()
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"arg\":\"()\"')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '( )']/..")
     private WebElement bracketsBtn; //type: button
 
     //кнопка "сброс" С
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"action\":\"ce\",\"arg\":null')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = 'C']/..")
     private WebElement clearBtn; //type: button
 
     //кнопка "равно" =
-    @FindBy (xpath = "//button[contains(@class,'calculator__btn') and contains(@data-bem,'\"action\":\"equal\",\"arg\":null')]")
+    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '=']/..")
     private WebElement equalBtn; //type: button
 
 
@@ -184,10 +186,12 @@ public class ResultPage {
     }
 
     public void clickClearBtn() {
+        waitSomething(100); //имитируем небольшие задержки перед нажатием, чтобы максимально повысить вероятность обновления значения в полях веб-страницы
         clearBtn.click();
     }
 
     public void clickEqualBtn() {
+        waitSomething(100); //имитируем небольшие задержки перед нажатием, чтобы максимально повысить вероятность обновления значения в полях веб-страницы
         equalBtn.click();
     }
 
