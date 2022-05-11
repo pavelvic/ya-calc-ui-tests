@@ -90,7 +90,7 @@ public class CalculatorTest {
     //приоритет 2 у тесте наличия калькулятора в резлуьтатах поиска калькулятор для работы, остальные тесты - приоритет 3
     @Feature("Инициализация главной страницы")
     @Step ("Появилась главная страница с формой для ввода и кнопкой 'Найти'")
-    @Test (priority = 1, description = "Загрузка калькулятора")
+    @Test (priority = 1, description = "Загрузка главной страницы")
     public void testHasMainPageWithSearchArrowElement() {
         assertThat(searchPage.getSearchArrow(), exists());
     }
