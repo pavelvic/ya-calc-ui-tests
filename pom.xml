@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.1.4</version>
+            <version>3.141.59</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -47,6 +47,13 @@
             <version>1.7.29</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/ru.yandex.qatools.htmlelements/htmlelements-all -->
+        <dependency>
+            <groupId>ru.yandex.qatools.htmlelements</groupId>
+            <artifactId>htmlelements-all</artifactId>
+            <version>1.20.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

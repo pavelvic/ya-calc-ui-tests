@@ -1,13 +1,12 @@
 package com.pavelvic.ya_calc_ui_tests;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
+import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
 import static com.pavelvic.ya_calc_ui_tests.Utils.waitSomething;
 
-import java.util.Optional;
 /**
  задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
  необходимые для этих выражений элементы страницы с калькулятором:
@@ -22,181 +21,47 @@ import java.util.Optional;
 
 public class ResultPage {
 
-    public WebDriver driver;
-
-    //калькулятор в результатах поиска
-    @FindBy(xpath = "//*[@data-fast-name=\"calculator\"]")
-    private WebElement fastSearchResult;//type marked list <li>
-
-    //текстовое поле ввода формулы
-    @FindBy(xpath = "//div[@class = 'calculator__wrapper']//span[@class = \"input__box\"]/input")
-    private WebElement expression; //type: input text area
-
-    //поле с результатом
-    @FindBy(className = "calculator-display__result")
-    private WebElement result; //type: text area
-
-    //поле с инфой об ошибке
-    @FindBy(className = "calculator-display__error")
-    private WebElement error; //type:  text area
-
-    //режим калькулятора DEG
-    @FindBy(xpath = "//*[@value=\"deg\"]")
-    private WebElement deg; //type: radiobutton
-
-    //режим калькулятора RAD
-    @FindBy(xpath = "//*[@value=\"rad\"]")
-    private WebElement rad; //type: radiobutton
-
-
-    //кнопка на калькуляторе "0"
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '0']/..")
-    private WebElement nullBtn; //type: button
-
-    //кнопка на калькуляторе "1"
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '1']/..")
-    private WebElement oneBtn; //type: button
-
-    //кнопка на калькуляторе "2"
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '2']/..")
-    private WebElement twoBtn; //type: button
-
-    //кнопка на калькуляторе "4"
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '4']/..")
-    private WebElement fourBtn; //type: button
-
-    //кнопка на калькуляторе "5"
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '5']/..")
-    private WebElement fiveBtn; //type: button
-
-    //кнопка "," (разделитель разрядов числа)
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = ',']/..")
-    private WebElement separatorBtn; //type: button
-
-    //кнопка "Pi" (число Пи)
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = 'π']/..")
-    private WebElement piBtn; //type: button
-
-    //кнопка "квардартный корень"
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '√']/..")
-    private WebElement sqrtBtn; //type: button
-
-    //кнопка "косинус" (cos)
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = 'cos']/..")
-    private WebElement cosBtn; //type: button
-
-    //кнопка "умножение" *
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '×']/..")
-    private WebElement multiplyBtn; //type: button
-
-    //кнопка "деление" /
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '÷']/..")
-    private WebElement divisionBtn; //type: button
-
-    //кнопка "скобки" ()
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '( )']/..")
-    private WebElement bracketsBtn; //type: button
-
-    //кнопка "сброс" С
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = 'C']/..")
-    private WebElement clearBtn; //type: button
-
-    //кнопка "равно" =
-    @FindBy(xpath = "//*[@class = \"button2__text\" and text() = '=']/..")
-    private WebElement equalBtn; //type: button
-
+    private CalculatorElement calculatorElement;
 
     public ResultPage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
-        this.driver = driver;
+        PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(driver)), this);
     }
 
     //метод для ввода запроса в текстовое поле
     public void inputExpression (String input) {
-        expression.sendKeys(input);
+        calculatorElement.getExpression().sendKeys(input);
     }
 
     //получаем результат вычисления
     public String getResult() {
-        return result.getText();
+        return calculatorElement.getResult().getText();
     }
 
     //получаем сообщение об ошибке
     public String getError() {
-        return error.getText();
+        return calculatorElement.getError().getText();
     }
 
-    //кликаем для выбора режима калькулятора DEG
     public void clickDeg() {
-        deg.click();
+        calculatorElement.getSwitcherDegRad().selectByValue("deg");
     }
 
-    //кликаем для выбора режима калькулятора RAD
     public void clickRad() {
-        rad.click();
-    }
-
-    /* блок методов нажатий на кнопки*/
-    public void clickNullBtn() {
-        nullBtn.click();
-    }
-
-    public void clickOneBtn() {
-        oneBtn.click();
-    }
-
-    public void clickTwoBtn() {
-        twoBtn.click();
-    }
-
-    public void clickFourBtn() {
-        fourBtn.click();
-    }
-
-    public void clickFiveBtn() {
-        fiveBtn.click();
-    }
-
-    public void clickSeparatorBtn() {
-        separatorBtn.click();
-    }
-
-    public void clickPiBtn() {
-        piBtn.click();
-    }
-
-    public void clickSqrtBtn() {
-        sqrtBtn.click();
-    }
-
-    public void clickCosBtn() {
-        cosBtn.click();
-    }
-
-    public void clickMultiplyBtn() {
-        multiplyBtn.click();
-    }
-
-    public void clickDivisionBtn() {
-        divisionBtn.click();
-    }
-
-    public void clickBracketsBtn() {
-        bracketsBtn.click();
+        calculatorElement.getSwitcherDegRad().selectByValue("rad");
     }
 
     public void clickClearBtn() {
-        waitSomething(100); //имитируем небольшие задержки перед нажатием, чтобы максимально повысить вероятность обновления значения в полях веб-страницы
-        clearBtn.click();
+        calculatorElement.getClearBtn().click();
     }
+
+    public CalculatorElement getCalculatorElement() {
+        return calculatorElement;
+    }
+
+    public void clickButton (CalcButtons calcButton) {calculatorElement.getButton(calcButton).click();}
 
     public void clickEqualBtn() {
-        waitSomething(100); //имитируем небольшие задержки перед нажатием, чтобы максимально повысить вероятность обновления значения в полях веб-страницы
-        equalBtn.click();
-    }
-
-    //наличие калькулятора на странице поиска (в Optional заворачивается строка 'Calculator' атрибута data-fast-name, если такого нет - null)
-    public Optional<String> getFastSearchResultType() {
-        return Optional.ofNullable(fastSearchResult.getAttribute("data-fast-name"));
+        waitSomething(100); //имитируем работу пользователя и небольшую задержку нажатия кнопки
+        calculatorElement.getEqualBtn().click();
     }
 }
