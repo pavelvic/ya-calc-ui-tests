@@ -17,8 +17,13 @@
 - HTMLElements  
 
 ## Результаты
-Использован TestNG, hamcrest, PageObject, HTMLElements, Allure.   
+Использован TestNG, hamcrest, PageObject, HTMLElements, Allure.
+
+_Скриншот отчета_  
 ![allure_report](https://github.com/pavelvic/ya-calc-ui-tests/blob/HTMLElements/_screenshots/allure_report.jpg)  
+
+_Видео работы программы_  
+[![Watch the video](https://img.youtube.com/vi/v9xNas3BdW8/0.jpg)](https://youtu.be/v9xNas3BdW8)  
 
 _Затрачено времени_:  
 - основное задание - 13.5 часов  
