@@ -7,7 +7,6 @@ import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory
 
 import static com.pavelvic.ya_calc_ui_tests.Utils.waitSomething;
 
-
 /**
  задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
  необходимые для этих выражений элементы страницы с калькулятором:

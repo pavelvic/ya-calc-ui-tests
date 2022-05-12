@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.pavelvic.ya_calc_ui_tests.Utils.waitSomething;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -100,7 +101,6 @@ public class CalculatorTest {
         };
     }
 
-
     //тест кейсы для ввода данных путем нажатия кнопок в интерфейсе {"условное обозначение кнопки калькулятора через ';'", "результат", "режим вычисления (RAD / DEG)"}
     @DataProvider
     private Object[][] possibleManualInputs() {
@@ -124,7 +124,6 @@ public class CalculatorTest {
     public void testHasMainPageWithSearchArrowElement() {
         assertThat(searchPage.getSearchArrow(), exists());
     }
-
 
     @Feature("Инициализация калькулятора")
     @Step ("Калькулятор загрузился на странице с результатами поиска")
