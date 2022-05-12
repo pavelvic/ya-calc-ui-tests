@@ -51,54 +51,6 @@ public class ResultPage {
         calculatorElement.getSwitcherDegRad().selectByValue("rad");
     }
 
-    public void clickNullBtn() {
-        calculatorElement.getNullBtn().click();
-    }
-
-    public void clickOneBtn() {
-        calculatorElement.getOneBtn().click();
-    }
-
-    public void clickTwoBtn() {
-        calculatorElement.getTwoBtn().click();
-    }
-
-    public void clickFourBtn() {
-        calculatorElement.getFourBtn().click();
-    }
-
-    public void clickFiveBtn() {
-        calculatorElement.getFiveBtn().click();
-    }
-
-    public void clickSeparatorBtn() {
-        calculatorElement.getSeparatorBtn().click();
-    }
-
-    public void clickPiBtn() {
-        calculatorElement.getPiBtn().click();
-    }
-
-    public void clickSqrtBtn() {
-        calculatorElement.getSqrtBtn().click();
-    }
-
-    public void clickCosBtn() {
-        calculatorElement.getCosBtn().click();
-    }
-
-    public void clickMultiplyBtn() {
-        calculatorElement.getMultiplyBtn().click();
-    }
-
-    public void clickDivisionBtn() {
-        calculatorElement.getDivisionBtn().click();
-    }
-
-    public void clickBracketsBtn() {
-        calculatorElement.getBracketsBtn().click();
-    }
-
     public void clickClearBtn() {
         calculatorElement.getClearBtn().click();
     }
@@ -106,6 +58,8 @@ public class ResultPage {
     public CalculatorElement getCalculatorElement() {
         return calculatorElement;
     }
+
+    public void clickButton (CalcButtons calcButton) {calculatorElement.getButton(calcButton).click();}
 
     public void clickEqualBtn() {
         waitSomething(100); //имитируем работу пользователя и небольшую задержку нажатия кнопки

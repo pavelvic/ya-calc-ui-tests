@@ -1,7 +1,5 @@
 package com.pavelvic.ya_calc_ui_tests;
 
-
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.element.*;
 
@@ -96,59 +94,46 @@ public class CalculatorElement extends HtmlElement {
         return switcherDegRad;
     }
 
-    public Button getNullBtn() {
-        return nullBtn;
-    }
-
-    public Button getOneBtn() {
-        return oneBtn;
-    }
-
-    public WebElement getTwoBtn() {
-        return twoBtn;
-    }
-
-    public Button getFourBtn() {
-        return fourBtn;
-    }
-
-    public Button getFiveBtn() {
-        return fiveBtn;
-    }
-
-    public Button getSeparatorBtn() {
-        return separatorBtn;
-    }
-
-    public Button getPiBtn() {
-        return piBtn;
-    }
-
-    public Button getSqrtBtn() {
-        return sqrtBtn;
-    }
-
-    public Button getCosBtn() {
-        return cosBtn;
-    }
-
-    public Button getMultiplyBtn() {
-        return multiplyBtn;
-    }
-
-    public Button getDivisionBtn() {
-        return divisionBtn;
-    }
-
-    public Button getBracketsBtn() {
-        return bracketsBtn;
-    }
-
     public Button getClearBtn() {
         return clearBtn;
     }
 
     public Button getEqualBtn() {
         return equalBtn;
+    }
+
+    public Button getButton(CalcButtons calcButton) {
+        switch (calcButton) {
+            case NULL:
+                return nullBtn;
+            case ONE:
+                return oneBtn;
+            case TWO:
+                return twoBtn;
+            case FOUR:
+                return fourBtn;
+            case FIVE:
+                return fiveBtn;
+            case SEP:
+                return separatorBtn;
+            case PI:
+                return piBtn;
+            case SQRT:
+                return sqrtBtn;
+            case COS:
+                return cosBtn;
+            case MULTIPLY:
+                return multiplyBtn;
+            case DIV:
+                return divisionBtn;
+            case BRACKETS:
+                return bracketsBtn;
+            case CLEAR:
+                return clearBtn;
+            case EQUAL:
+                return equalBtn;
+            default:
+                return null;
+        }
     }
 }
