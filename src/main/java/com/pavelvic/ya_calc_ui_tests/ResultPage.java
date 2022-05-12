@@ -2,10 +2,9 @@ package com.pavelvic.ya_calc_ui_tests;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import ru.yandex.qatools.htmlelements.element.TextBlock;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
-
-import static com.pavelvic.ya_calc_ui_tests.Utils.waitSomething;
 
 /**
  задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
@@ -27,19 +26,20 @@ public class ResultPage {
         PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(driver)), this);
     }
 
-    //метод для ввода запроса в текстовое поле
     public void inputExpression (String input) {
         calculatorElement.getExpression().sendKeys(input);
     }
 
-    //получаем результат вычисления
     public String getResult() {
         return calculatorElement.getResult().getText();
     }
 
-    //получаем сообщение об ошибке
     public String getError() {
         return calculatorElement.getError().getText();
+    }
+
+    public TextBlock getErrorElement() {
+        return calculatorElement.getError();
     }
 
     public void clickDeg() {
@@ -58,10 +58,11 @@ public class ResultPage {
         return calculatorElement;
     }
 
-    public void clickButton (CalcButtons calcButton) {calculatorElement.getButton(calcButton).click();}
+    public void clickButton (CalcButtons calcButton) {
+        calculatorElement.getButton(calcButton).click();
+    }
 
     public void clickEqualBtn() {
-        waitSomething(100); //имитируем работу пользователя и небольшую задержку нажатия кнопки
         calculatorElement.getEqualBtn().click();
     }
 }

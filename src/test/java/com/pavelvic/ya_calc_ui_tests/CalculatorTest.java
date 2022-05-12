@@ -2,9 +2,13 @@ package com.pavelvic.ya_calc_ui_tests;
 
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.*;
 
 import java.util.Arrays;
@@ -12,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.pavelvic.ya_calc_ui_tests.Utils.waitSomething;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -20,9 +23,10 @@ import static ru.yandex.qatools.htmlelements.matchers.WebElementMatchers.exists;
 
 public class CalculatorTest {
 
-    public static WebDriver driver;
-    public static SearchPage searchPage;
-    public static ResultPage resultPage;
+    private WebDriver driver;
+    private WebDriverWait wait;
+    private SearchPage searchPage;
+    private ResultPage resultPage;
 
     /** чек лист:
      * проверить ввод формулы с клавиатуры (прямой / обратный порядок ввода)
@@ -34,7 +38,10 @@ public class CalculatorTest {
     private void driverInit() {
         System.setProperty("webdriver.chrome.driver", ConfProperties.getProperty("chromedriver"));
         driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver, 10);
+        driver.manage().timeouts().implicitlyWait(5000, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().pageLoadTimeout(10000, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
         driver.manage().window().maximize();
     }
 
@@ -101,7 +108,7 @@ public class CalculatorTest {
         };
     }
 
-    //тест кейсы для ввода данных путем нажатия кнопок в интерфейсе {"условное обозначение кнопки калькулятора через ';'", "результат", "режим вычисления (RAD / DEG)"}
+    //тест кейсы для ввода данных путем нажатия кнопок в интерфейсе {"операции через ';' по названию кнопок", "результат", "режим вычисления (RAD / DEG)"}
     @DataProvider
     private Object[][] possibleManualInputs() {
         return new Object[][]{
@@ -109,7 +116,7 @@ public class CalculatorTest {
                 {"SQRT;ONE;FOUR;FOUR", "12", "DEG"},
                 {"SQRT;ONE;FOUR;FOUR;BRACKETS", "12", "DEG"},
                 {"ONE;SEP;FIVE;MULTIPLY;ONE;NULL;NULL", "150", "DEG"},
-                {"ONE;NULL;NULL;MULTIPLY;ONE;SEP;FIVE;", "150", "DEG"},
+                {"ONE;NULL;NULL;MULTIPLY;ONE;SEP;FIVE", "150", "DEG"},
                 {"COS;PI;DIV;TWO", "0", "RAD"},
                 {"PI;DIV;TWO;COS", "Ошибка", "RAD"},
         };
@@ -140,31 +147,56 @@ public class CalculatorTest {
         modeSwitcher(mode);
 
         //вводим значения
-        resultPage.inputExpression(input+ Keys.ENTER);
+        resultPage.inputExpression(input+Keys.ENTER);
 
         //получаем результат и проверяем с ожиданием
         assertThat(expectedResult.equals("Ошибка") ? resultPage.getError() : resultPage.getResult(),is(expectedResult));
 
         //сброс
         resultPage.inputExpression(""+Keys.ESCAPE);
-        Utils.waitSomething(100);
     }
 
     @Feature("Ввод формул путём нажания кнопок")
     @Step ("Введена следующая комбинация кнопок: {input}. Получено {expectedResult} в режиме ({mode})")
     @Test(dataProvider = "possibleManualInputs", priority = 3, description = "Ввод данных путём нажатия кнопок")
     public void testManualInput (String input, String expectedResult, String mode) {
-        modeSwitcher(mode);
-        List<CalcButtons> inputButtons = Arrays.stream(input.split(";")).map(CalcButtons::valueOf).collect(Collectors.toList());
-        inputButtons.forEach(p->resultPage.clickButton(p));
-        resultPage.clickEqualBtn();
-        assertThat(expectedResult.equals("Ошибка") ? resultPage.getError() : resultPage.getResult(),is(expectedResult));
 
+        //установка режима
+        modeSwitcher(mode);
+
+        //парсим инпут
+        List<CalcButtons> inputButtons = Arrays.stream(input.split(";")).map(CalcButtons::valueOf).collect(Collectors.toList());
+
+        //нажимаем кнопки
+        inputButtons.forEach(p->resultPage.clickButton(p));
+
+        /*к сожалению, здесь нельзя сделать без такого грубого ожидания (или я не знаю как)
+        проблема в том, что нажатие кнопки "=" должно быть выполнено гарантированно после нажатия всех кнопок в цикле выше,
+        но так не происходит практически всегда, ожидание нажатия "=" или выполняется раньше или вообще не выполняется
+        при этом на веб-странице нет признака окончания ввода (и реализовать это не понятно как),
+        чтобы можно было сделать явное ожидание средствами Selenium (мы не можем сказать программе какого изменения состояния страницы надо ждать)
+                */
+        //TODO подумать на досуге
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //равно
+        resultPage.clickEqualBtn();
+
+        //получаем и сравниваем результат
+        assertThat(expectedResult.equals("Ошибка") ? resultPage.getError() : resultPage.getResult(),is(expectedResult));
     }
 
     @AfterMethod (description = "Сброс состояния калькулятора")
     private void clearButtonClk () {
+        //ожидание очищения калькулятора
         resultPage.clickClearBtn();
+        //здесь удалось реализовать явное ожидание средствами Selenium, поскольку есть атрибут, который четко меняется только после нажатия сброса
+        WebElement we = driver.findElement(By.xpath("//*[@class = 'calculator__screen']//*[@class = 'input__box']/.."));
+        wait.until(ExpectedConditions.attributeContains(we,"class","input_empty_yes"));
     }
 
     @AfterClass (description = "Закрытие драйвера")

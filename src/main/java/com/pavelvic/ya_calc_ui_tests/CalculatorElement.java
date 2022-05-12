@@ -13,6 +13,10 @@ public class CalculatorElement extends HtmlElement {
     @FindBy(className = "calculator-display__result")
     private TextBlock result;
 
+    //поле с вводом
+    @FindBy(className = "calculator-display__input-string")
+    private TextBlock input;
+
     //поле с инфой об ошибке
     @FindBy(className = "calculator-display__error")
     private TextBlock error;
@@ -82,6 +86,10 @@ public class CalculatorElement extends HtmlElement {
         return expression;
     }
 
+    public TextBlock getInput() {
+        return input;
+    }
+
     public TextBlock getResult() {
         return result;
     }
@@ -102,6 +110,7 @@ public class CalculatorElement extends HtmlElement {
         return equalBtn;
     }
 
+    //универсальный геттер кнопок калькулятора
     public Button getButton(CalcButtons calcButton) {
         switch (calcButton) {
             case NULL:
