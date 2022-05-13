@@ -5,7 +5,7 @@ import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.element.Button;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TextInput;
-
+/*Блок страницы с формой поиска (строка ввода + кнопка "Найти")*/
 @FindBy(xpath = "//form")
 public class SearchArrow extends HtmlElement {
 

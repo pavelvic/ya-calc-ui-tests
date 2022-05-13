@@ -6,18 +6,7 @@ import ru.yandex.qatools.htmlelements.element.TextBlock;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
-/**
- задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
- необходимые для этих выражений элементы страницы с калькулятором:
- - текстовое поле ввода;
- - переключатель DEG / RAD
- - кнопки калькулятора:
- - числа 0, 1, 2, 4, 5;
- - операции: запятая ","; Pi (π); sqrt (√); cos; знак умножения (*); знак деления (/); скобки "()"; кнопка сброса (C, clear); кнопка "равно" (=)
- Ограничения тестового задания говорят, что достаточно описать только эти поля. При реальном тестировании, конечно, следует моделировать страницу полностью
- Но сейчас это не нужно и создат много лишнего кода, поэтому ограничился только этими полями
- **/
-
+/*страницы с результатам поиска и релевантная для наших тестов функциональность*/
 public class ResultPage {
 
     private CalculatorElement calculatorElement;
@@ -58,6 +47,7 @@ public class ResultPage {
         return calculatorElement;
     }
 
+    //универсальный кликер кнопок калькулятора (перечень определён в enum CalcButtons)
     public void clickButton (CalcButtons calcButton) {
         calculatorElement.getButton(calcButton).click();
     }

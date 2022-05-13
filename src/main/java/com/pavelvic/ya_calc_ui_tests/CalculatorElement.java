@@ -3,8 +3,21 @@ package com.pavelvic.ya_calc_ui_tests;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.element.*;
 
+/*блок страницы, реализующий клалькулятор*/
 @FindBy(className = "calculator__wrapper")
 public class CalculatorElement extends HtmlElement {
+
+    /*
+     задача протестировать выражения (sqrt(144) = 12;      cos(Pi/2) = 0;     1,5 * 100 = 150):
+     необходимые для этих выражений элементы страницы с калькулятором:
+     - текстовое поле ввода;
+     - переключатель DEG / RAD
+     - кнопки калькулятора:
+     - числа 0, 1, 2, 4, 5;
+     - операции: запятая ","; Pi (π); sqrt (√); cos; знак умножения (*); знак деления (/); скобки "()"; кнопка сброса (C, clear); кнопка "равно" (=)
+     Ограничения тестового задания говорят, что достаточно описать только эти поля. При реальном тестировании, конечно, следует моделировать страницу полностью
+     Но сейчас это не нужно и создат много лишнего кода, поэтому ограничился только этими полями
+     */
 
     @FindBy(xpath = "//div[@class = 'calculator__wrapper']//span[@class = \"input__box\"]/input")
     private TextInput expression;
