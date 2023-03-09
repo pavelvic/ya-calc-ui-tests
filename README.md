@@ -13,7 +13,7 @@ Test this expressions by [link](https://yandex.ru/search/?text=%D0%BA%D0%B0%D0%B
 
 ### Results.
 _Allure report_  
-![allure_report](https://github.com/pavelvic/ya-calc-ui-tests/blob/HTMLElements/_screenshots/allure_report.jpg)  
+![allure_report](https://raw.githubusercontent.com/pavelvic/ya-calc-ui-tests/main/_screenshots/allure_report.jpg)
 
 _Video demo_  
 [![Watch the video](https://img.youtube.com/vi/v9xNas3BdW8/0.jpg)](https://youtu.be/v9xNas3BdW8)
