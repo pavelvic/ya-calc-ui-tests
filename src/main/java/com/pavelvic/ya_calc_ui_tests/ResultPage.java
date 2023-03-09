@@ -6,7 +6,6 @@ import ru.yandex.qatools.htmlelements.element.TextBlock;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
-/*страницы с результатам поиска и релевантная для наших тестов функциональность*/
 public class ResultPage {
 
     private CalculatorElement calculatorElement;
@@ -47,7 +46,6 @@ public class ResultPage {
         return calculatorElement;
     }
 
-    //универсальный кликер кнопок калькулятора (перечень определён в enum CalcButtons)
     public void clickButton (CalcButtons calcButton) {
         calculatorElement.getButton(calcButton).click();
     }

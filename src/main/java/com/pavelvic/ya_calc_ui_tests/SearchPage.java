@@ -5,7 +5,6 @@ import org.openqa.selenium.support.PageFactory;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
-/*главная страница с формой для поиска*/
 public class SearchPage {
 
     SearchArrow searchArrow;

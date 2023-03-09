@@ -1,22 +1,22 @@
 [
   {
-    "name": "Успешно",
+    "name": "Passed",
     "matchedStatuses": ["passed"]
   },
   {
-    "name": "Дефекты продукта",
+    "name": "Failed",
     "matchedStatuses": ["failed"]
   },
   {
-    "name": "Дефекты тестов",
+    "name": "Broken",
     "matchedStatuses": ["broken"]
   },
   {
-    "name": "Неизвестная проблема",
+    "name": "Unknown",
     "matchedStatuses": ["unknown"]
   },
   {
-    "name": "Пропущено",
+    "name": "Skipped",
     "matchedStatuses": ["skipped"]
   }
 ]
